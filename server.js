@@ -17,7 +17,7 @@ app.use(middleware.decodeToken);
 
 app.get("/", async (req, res) => {
     const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
+    keyFile: "nadaRaro.json",
     scopes: "https://www.googleapis.com/auth/spreadsheets",
     });
 
@@ -44,7 +44,7 @@ app.post("/", jsonParser, async (req, res) => {
   console.log(req.body)
 
   const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
+    keyFile: "nadaRaro.json",
     scopes: "https://www.googleapis.com/auth/spreadsheets",
   });
 
