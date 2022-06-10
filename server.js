@@ -72,4 +72,4 @@ app.post("/", jsonParser, async (req, res) => {
   res.send("Successfully submitted! Thank you!");
 });
 
-app.listen(1337, (req, res) => console.log("running on 1337"));
+app.listen(3000, (req, res) => console.log("running on 3000"));
