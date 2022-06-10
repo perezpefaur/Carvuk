@@ -1,10 +1,18 @@
 const express = require("express");
+const cors = require('cors');
 const { google } = require("googleapis");
 const middleware = require('./middleware');
+const bodyParser = require('body-parser')
 
 const app = express();
 app.set("view engine", "ejs");
+// create application/json parser
+var jsonParser = bodyParser.json()
+ 
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(middleware.decodeToken);
 
 app.get("/", async (req, res) => {
@@ -31,8 +39,9 @@ app.get("/", async (req, res) => {
     res.send(getRows.data);
 });
 
-app.post("/", async (req, res) => {
-  const { request, name } = req.body;
+app.post("/", jsonParser, async (req, res) => {
+  const { estado, ubicacion} = req.body;
+  console.log(req.body)
 
   const auth = new google.auth.GoogleAuth({
     keyFile: "credentials.json",
@@ -47,22 +56,17 @@ app.post("/", async (req, res) => {
 
   const spreadsheetId = "1tKGznqnMPUxH0P53WOQ-Ckdz1hlL4H298uE7vu0b6yc";
 
-  // Read rows from spreadsheet
-  const getRows = await googleSheets.spreadsheets.values.get({
-    auth,
-    spreadsheetId,
-    range: "Sheet1!A:A",
-  });
-
   // Write row(s) to spreadsheet
-  await googleSheets.spreadsheets.values.append({
+  await googleSheets.spreadsheets.values.update({
     auth,
     spreadsheetId,
-    range: "Sheet1!A:B",
+    range: `Hoja 1!A${ubicacion}`,
     valueInputOption: "USER_ENTERED",
     resource: {
-      values: [[request, name]],
+      values: [[estado]],
     },
+  }).then((response) => {
+    console.log(response);
   });
 
   res.send("Successfully submitted! Thank you!");
